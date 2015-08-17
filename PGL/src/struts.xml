@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<!-- 上传文件大小限制 全局范围 -->
+	<constant name="struts.multipart.maxSize" value="15728640"></constant>
+	<constant name="struts.custom.i18n.resources" value="lang_locale"></constant>
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<!-- 上传文件临时存储目录 Windows系统为非C盘(系统盘)的第一个盘符下的tmp目录下-->
+	<constant name="struts.multipart.saveDir" value="/tmp"/>
+	
+	<package name="project" extends="struts-default,json-default">
+	
+	  <!-- 自定义一个拦截器 -->  
+        <interceptors>  
+            <interceptor name="authority" class="org.pgl.action.interceptor.LoginInterceptor"></interceptor>  
+            <!-- 拦截器栈 -->  
+            <interceptor-stack name="mydefault">  
+                <interceptor-ref name="defaultStack" />  
+                <interceptor-ref name="authority" />  
+            </interceptor-stack>  
+        </interceptors>
+        <!-- 默认拦截器-该包下的所有Action执行之前都要先走此拦截器 若Action配置了拦截器 默认拦截器对其无效果-->
+  		<default-interceptor-ref name="mydefault"/>
+  		
+        <!-- 定义全局Result -->  
+        <global-results>  
+            <result name="login" type="redirect">login.action</result>
+        </global-results> 
+	
+		<action name="login" class="org.pgl.action.login.LoginAction">
+			<result name="input">/jsp/login.jsp</result>
+			<result name="error">/jsp/login.jsp</result>
+			<result name="success">/jsp/project.jsp</result>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+		
+		<action name="edit" class="org.pgl.action.EditAction">
+			<result name="input">/jsp/login.jsp</result>
+			<result name="error">/jsp/main.jsp</result>
+			<result name="success">/jsp/editor.jsp</result>
+			<!-- <interceptor-ref name="mydefault" /> -->   
+		</action>
+		
+		<action name="addMenu" class="org.pgl.action.menu.AddMenuAction">
+		    <result name="error">/jsp/menu_left.jsp</result>
+			<result name="success">/jsp/menu_left.jsp</result>
+		</action>
+		<action name="addRootMenu" class="org.pgl.action.menu.AddMenuRootAction">
+		    <result name="error">/jsp/menu_left.jsp</result>
+			<result name="success">/jsp/menu_left.jsp</result>
+		</action>
+		<action name="deleteMenu" class="org.pgl.action.menu.DeleteMenuAction">
+		    <result name="error">/jsp/menu_left.jsp</result>
+			<result name="success">/jsp/menu_left.jsp</result>
+		</action>
+		<action name="editMenu" class="org.pgl.action.menu.EditMenuAction">
+		    <result name="error">/jsp/menu_left.jsp</result>
+			<result name="success">/jsp/menu_left.jsp</result>
+		</action>
+		<action name="getMenuListAsync" class="org.pgl.action.menu.GetMenuListAsync">
+		    <result name="error">/jsp/menu_left.jsp</result>
+			<result name="success">/jsp/menu_left.jsp</result>
+		</action>
+		<action name="updateMenuPid" class="org.pgl.action.menu.EditMenuAction" method="updateMenuPid">
+		    <result name="error">/jsp/menu_left.jsp</result>
+			<result name="success">/jsp/menu_left.jsp</result>
+		</action>
+		
+		<!-- 项目管理 -->
+		<action name="addProject" class="org.pgl.action.project.AddProjectAction">
+		    <result name="error">/jsp/project.jsp</result>
+			<result name="success">/jsp/project.jsp</result>
+		</action>
+		<action name="getProject" class="org.pgl.action.project.GetProjectAction">
+			<result name="success">/jsp/project.jsp</result>
+		</action>
+		<action name="removeProject" class="org.pgl.action.project.GetProjectAction" method="removeProject">
+			<result name="success">/jsp/project.jsp</result>
+		</action>
+		<action name="checkProjectExist" class="org.pgl.action.project.CheckProjectNameAction" method="checkProjectExist">
+		    <result name="success">/jsp/project.jsp</result>
+		</action>
+		<action name="upadteProject" class="org.pgl.action.project.GetProjectAction" method="updateProject">
+			<result name="success">/jsp/project.jsp</result>
+			<result name="error">/jsp/project.jsp</result>
+		</action>
+		
+		
+		
+		<action name="getUserMes" class="org.pgl.action.userMes.GetUserMesAction">
+		    <result name="error">/jsp/login.jsp</result>
+			<result name="success">/jsp/userMes.jsp</result>
+		</action>
+		<action name="updateUserMes" class="org.pgl.action.userMes.UpdateUserMesAction">
+			<result name="success">/jsp/userMes.jsp</result>
+		</action>
+		<action name="userQuit" class="org.pgl.action.userMes.UserQuitAction">
+			<result name="success">/jsp/login.jsp</result>
+		</action>
+		<action name="getAllUser" class="org.pgl.action.usermanage.ManageUserAction">
+			<result name="success">/jsp/alluser.jsp</result>
+		</action>
+		<action name="deleteUser" class="org.pgl.action.usermanage.ManageUserAction" method="deleteUser">
+			<result name="success">/jsp/alluser.jsp</result>
+		</action>
+		<action name="checkUserName" class="org.pgl.action.usermanage.ManageUserAction" method="checkUserName">
+			<result name="success">/jsp/alluser.jsp</result>
+		</action>
+		
+		<action name="saveUser" class="org.pgl.action.usermanage.ManageUserAction" method="addUser">
+			<result name="success">/jsp/alluser.jsp</result>
+		</action>
+		<!-- OperationLogger begin -->
+		<action name="getOperList" class="org.pgl.action.OperationLogAction">
+		    <result name="error">/jsp/operationlog.jsp</result>
+		    <result name="success">/jsp/operationlog.jsp</result>
+		</action>
+		<action name="getOperListPagging" class="org.pgl.action.OperationLogAction" method="getOperListPagging">
+		    <result name="error">/jsp/operationlog.jsp</result>
+		    <result name="success">/jsp/operationlog.jsp</result>
+		</action>
+		<action name="searchOperLogger" class="org.pgl.action.OperationLogAction" method="searchOperLogger">
+		    <result name="error">/jsp/operationlog.jsp</result>
+		    <result name="success">/jsp/operationlog.jsp</result>
+		</action>
+		
+		<!-- OperationLogger over -->
+		<action name="getCheck" class="org.pgl.action.check.ManageCheckAction">
+		     <result name="error">/jsp/check.jsp</result>
+			<result name="success">/jsp/check.jsp</result>
+		</action>
+		<action name="getCheckList" class="org.pgl.action.check.ManageCheckAction" method="getAnchorList">
+			<result name="error">/jsp/check.jsp</result>
+			<result name="success">/jsp/check.jsp</result>
+		</action>
+		<action name="saveCheckLanguage" class="org.pgl.action.check.ManageCheckAction" method="saveCheck">
+		     <result name="error">/jsp/check.jsp</result>
+			<result name="success">/jsp/check.jsp</result>
+			<result name="input">/jsp/check.jsp</result>
+		</action>
+		<action name="searchCheck" class="org.pgl.action.check.ManageCheckAction" method="searchCheck">
+		     <result name="error">/jsp/check.jsp</result>
+			<result name="success">/jsp/check.jsp</result>
+		</action>
+		
+		
+		
+		<!-- 加载菜单下的锚点信息 -->
+		<action name="loadAnchor" class="org.pgl.action.LoadAnchorAction">
+		    <result name="error">/jsp/center.jsp</result>
+			<result name="success">/jsp/center.jsp</result>
+		</action>
+		
+		<!-- 获取锚点KEY 
+		<action name="getAnchorKey" class="org.pgl.action.GetAnchorKeyAction">
+			<result name="success">/jsp/right.jsp</result>
+		</action>
+		-->
+		<!-- 测试重写-获取锚点KEY -->
+		<action name="getAnchorKey" class="org.pgl.action.GetAnchorInfoAction">
+			<result name="success">/jsp/rightAnchor.jsp</result>
+		</action>
+		<action name="saveAnchorInfo" class="org.pgl.action.GetAnchorInfoAction" method="saveAnchorInfo">
+			<result name="success">/jsp/rightAnchor.jsp</result>
+			<result name="error">/jsp/rightAnchor.jsp</result>
+		</action>
+		<!-- 引用其他的KEY -->
+		<action name="quoteAnchorKey" class="org.pgl.action.GetAnchorInfoAction" method="quoteAnchorKey">
+			<result type="json"></result>
+		</action>
+		<action name="quoteAnchorKeyById" class="org.pgl.action.GetAnchorInfoAction" method="quoteAnchorKeyById">
+			<result type="json"></result>
+		</action>
+		<action name="deleteTab" class="org.pgl.action.GetAnchorInfoAction" method="deleteTabById">
+			<result name="success">/jsp/rightAnchor.jsp</result>
+		</action>
+		<!-- ***END*** -->
+		
+		<!-- 删除锚点 AJAX-->
+		<action name="removeAnchor" class="org.pgl.action.RemoveAnchorAction">
+			<result name="success">/jsp/center.jsp</result>
+		</action>
+		
+		<!-- 检查锚点的KEY有无重复 AJAX -->
+		<action name="checkKey" class="org.pgl.action.CheckAnchorKeyAction">
+			<result name="success">/jsp/right.jsp</result>
+		</action>
+		
+		<!-- 预览锚点 -->
+		<action name="previewAnchor" class="org.pgl.action.PreviewAnchorAction">
+			<result name="success">/jsp/center.jsp</result>
+			<result name="input">/jsp/center.jsp</result>
+		</action>
+		
+		<!-- 保存锚点 -->
+		<action name="saveAnchorLanguage" class="org.pgl.action.SaveAnchorAction">
+			<result name="success">/jsp/right.jsp</result>
+			<result name="error">/jsp/right.jsp</result>
+		</action>
+		
+		<!-- 根据客户端类型获取语言信息 -->
+		<action name="getAllLanguage" class="org.pgl.action.GetAllLanguageAction">
+			<result name="success">/jsp/right.jsp</result>
+		</action>
+		
+		<!-- 文件上传 -->
+		<action name="fileUpload" class="org.pgl.action.UploadFileAction">
+			<result name="success">/jsp/center.jsp</result>
+			<result name="error">/jsp/center.jsp</result>
+			<!-- Struts 验证通不过就会返回input 此处表示超15M 堆栈(内存溢出)是错误不是异常<上传文件大于应用服务器设定值时> 错误不能捕获 -->
+			<result name="input">/jsp/center.jsp</result>
+			<interceptor-ref name="fileUpload">
+                <param name="allowedTypes">image/bmp,image/png,image/gif,image/jpeg</param>
+                <!-- 文件大小, 以字节为单位  15M-->
+                <param name="maximumSize">15728640</param>
+            </interceptor-ref>
+            <!-- 默认拦截器必须放在fileUpload之后，否则无效 -->
+            <interceptor-ref name="defaultStack" />
+		</action>
+		
+		<!-- 删除图片 -->
+		<action name="deletePic" class="org.pgl.action.UploadFileAction" method="deletePic">
+			<result name="success">/jsp/center.jsp</result>
+		</action>
+		
+		<!-- 导出多语言包文件 -->
+		<action name="expertFile" class="org.pgl.action.DownLoadAction">
+			 <result name="success" type="stream">   
+		        <param name="contentType">application/zip</param>   
+		        <param name="inputName">downloadFile</param>   
+		        <param name="contentDisposition">attachment;filename="multi-language.zip"</param>   
+		        <param name="bufferSize">4096</param>   
+    		</result>
+    		<result name="error">/jsp/right.jsp</result>
+		</action>
+		
+		<!-- 获取文案信息 -->
+		<action name="getCopyWriter" class="org.pgl.action.GetCopyWriterAction">
+			<result name="success">/jsp/right.jsp</result>
+		</action>
+		
+		<!-- 删除文案 -->
+		<action name="removeCopyWriter" class="org.pgl.action.RemoveCopyWriterAction">
+			<result name="success">/jsp/center.jsp</result>
+			<result name="error">/jsp/center.jsp</result>
+		</action>
+		
+		<!-- 添加文案 新-->
+		<action name="addNewWriter" class="org.pgl.action.AddNewWriterAction">
+			<result name="success">/jsp/center.jsp</result>
+			<result name="error">/jsp/center.jsp</result>
+		</action>
+		
+		<!-- 客户端管理-->
+		<action name="manageClient" class="org.pgl.action.ManageClientAction">
+			<result name="success">/jsp/manageClient.jsp</result>
+		</action>
+		<action name="deleteClient" class="org.pgl.action.ManageClientAction" method="deleteClient">
+			<result name="success">/jsp/manageClient.jsp</result>
+		</action>
+		<action name="updateClient" class="org.pgl.action.ManageClientAction" method="updateClient">
+			<result name="success">/jsp/manageClient.jsp</result>
+		</action>
+		<action name="addClient" class="org.pgl.action.ManageClientAction" method="addClient">
+			<result name="success">/jsp/manageClient.jsp</result>
+		</action>
+		<action name="checkClientName" class="org.pgl.action.ManageClientAction" method="checkClientName">
+			<result name="success">/jsp/manageClient.jsp</result>
+			<result name="error">/jsp/manageClient.jsp</result>
+		</action>
+		
+		<!-- 语言管理 -->
+		<action name="manageLanguage" class="org.pgl.action.ManageLanguageAction">
+			<result name="success">/jsp/manageClient.jsp</result>
+		</action>
+		<action name="saveLanguage" class="org.pgl.action.ManageLanguageAction" method="addLanguage">
+			<result name="success">/jsp/manageClient.jsp</result>
+		</action>
+		<action name="updateLanguage" class="org.pgl.action.ManageLanguageAction" method="updateLanguage">
+			<result name="success">/jsp/manageClient.jsp</result>
+		</action>
+		<action name="deleteLanguage" class="org.pgl.action.ManageLanguageAction" method="deleteLanguage">
+			<result name="success">/jsp/manageClient.jsp</result>
+		</action>
+		<action name="checkLanguageName" class="org.pgl.action.ManageLanguageAction" method="checkLanguageName">
+			<result name="success">/jsp/manageClient.jsp</result>
+			<result name="error">/jsp/manageClient.jsp</result>
+		</action>
+		<action name="checkIOSName" class="org.pgl.action.ManageLanguageAction" method="checkIOSName">
+			<result name="success">/jsp/manageClient.jsp</result>
+			<result name="error">/jsp/manageClient.jsp</result>
+		</action>
+		<action name="checkAndroidName" class="org.pgl.action.ManageLanguageAction" method="checkAndroidName">
+			<result name="success">/jsp/manageClient.jsp</result>
+			<result name="error">/jsp/manageClient.jsp</result>
+		</action>
+		
+		<!-- GlobalKey管理 -->
+		<action name="getAllGlobalKey" class="org.pgl.action.ManageGlobalKeyAction">
+			<result name="success">/jsp/manageGlobalKey.jsp</result>
+			<result name="error">/jsp/login.jsp</result>
+		</action>
+		<action name="addGlobalKey" class="org.pgl.action.ManageGlobalKeyAction" method="addGlobalKey">
+			<result name="success">/jsp/manageGlobalKey.jsp</result>
+			<result name="error">/jsp/login.jsp</result>
+		</action>
+		<action name="deleteGlobalKey" class="org.pgl.action.ManageGlobalKeyAction" method="deleteGlobalKey">
+			<result name="success" type="redirect">getAllGlobalKey.action</result>
+			<result name="error">/jsp/login.jsp</result>
+		</action>
+		
+		<!-- Email管理 -->
+		<action name="manageEmail" class="org.pgl.action.ManageEmailAction">
+			<result name="success">/jsp/manageEmail.jsp</result>
+			<result name="error">/jsp/login.jsp</result>
+		</action>
+		<action name="removeEmail" class="org.pgl.action.ManageEmailAction" method="removeEmail">
+			<result name="success">/jsp/manageEmail.jsp</result>
+			<result name="error">/jsp/login.jsp</result>
+		</action>
+		<action name="addEmail" class="org.pgl.action.ManageEmailAction" method="addEmail">
+			<result name="success">/jsp/manageEmail.jsp</result>
+			<result name="error">/jsp/login.jsp</result>
+		</action>
+	</package>
+</struts>    
